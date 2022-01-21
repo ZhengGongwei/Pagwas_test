@@ -1,4 +1,22 @@
 #time
+library("dplyr")
+library("foreach")
+library("data.table")
+library("Seurat")
+library("Matrix")
+library(stringr) 
+#library("parallel")
+# library('doParallel')
+library("irlba")
+library("glmnet")
+#library(tidyfst)
+library(GenomicRanges)
+library(utils)
+
+library(ggplot2) 
+library(ggthemes) 
+library(ggpubr)
+
 load("timeEffect_100W_0.001_0.72.RData")
 Path<-c(1,2,3,4,5,6)
 features<-c(1,2,3,4,5)
