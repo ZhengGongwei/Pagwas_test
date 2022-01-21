@@ -1,0 +1,5 @@
+#PBS -N 100W_0.001_0.72
+#PBS -q workq
+#PBS -o /share2/pub/zhenggw/zhenggw/Pagwas_test/100W_0.001_0.72.out
+#PBS -e /share2/pub/zhenggw/zhenggw/Pagwas_test/100W_0.001_0.72.err
+/share2/pub/zhenggw/zhenggw/anaconda3/envs/R410/bin/Rscript /share2/pub/zhenggw/zhenggw/Pagwas_test/100W_0.001_0.72.R
