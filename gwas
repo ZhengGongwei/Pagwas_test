@@ -1,0 +1,888 @@
+scPagwas_LDSC
+
+#GWAS data processed
+
+#MDD
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/01_neuropsychiatric_disorders/GWAS_UK_Biobank_MDD/UK_biobank_data_for_depression/ukb-b-12064.vcf.gz | grep -v "##" | cut -f 1-5,10| awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./BID_ldsc.txt
+
+#ADHD
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/01_neuropsychiatric_disorders/ADHD/ieu-a-1183.vcf.gz | grep -v "##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./ADHD_ldsc.txt
+
+#BID
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/01_neuropsychiatric_disorders/BIB/ieu-b-41.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./BID_ldsc.txt
+
+
+ python ./ldsc/munge_sumstats.py \
+      --sumstats MDD_ldsc.txt \
+      --N 462933 \
+      --out MDD \
+      --chunksize 500000 \
+      --merge-alleles ./w_hm3.snplist
+
+#ASD
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/01_neuropsychiatric_disorders/ASD/ieu-a-1185.vcf.gz | grep -v "^##" |  grep -v "^X" | cut -f 1-5,10 |  awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./ASD_ldsc.txt
+
+#AD
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/AD/ieu-b-2.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./AD_ldsc.txt
+
+#EP
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/EP/ieu-b-8.vcf.gz | grep -v "^##" | grep -v "^X" |cut -f 1-5,10 |  awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  |  sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./EP_ldsc.txt
+
+#Focal_EP
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/Focal_EP/ieu-b-10.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  |  sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./Focal_EP_ldsc.txt
+
+#Generalized_EP
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/Generalized_EP/ieu-b-9.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  |  sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./Generalized_EP_ldsc.txt
+
+
+#Juvenile_EP
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/Juvenile_EP/ieu-b-17.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  |  sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./Juvenile_EP_ldsc.txt
+
+#MG
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/Migraine/ukb-b-16868.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  |  sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./MG_ldsc.txt
+
+#MS
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/02_neurodegenerative_disorders/Multiple_sclerosis/ieu-b-18.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  |  sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./MS_ldsc.txt
+
+#SC
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/03_Behavior_cognitive_phenotype/smokingCessation/bbj-a-81.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./SC_ldsc.txt
+
+#CognitivePerformance
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/03_Behavior_cognitive_phenotype/CognitivePerformance/ebi-a-GCST006572.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./CognitivePerformance_ldsc.txt
+
+#Openness
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/03_Behavior_cognitive_phenotype/OpennessToExperence/ieu-a-117.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./Openness_ldsc.txt
+
+#SubjectWellBeing
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/03_Behavior_cognitive_phenotype/SubjectWellBeing/ebi-a-GCST003766.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./SubjectWellBeing_ldsc.txt
+
+#Happiness
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/03_Behavior_cognitive_phenotype/Happiness/ukb-b-4062.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}'  | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./Happiness_ldsc.txt
+
+
+```R
+#top10Gene
+library(tidyverse)
+library("rhdf5")
+library("snow")
+library(Seurat)
+
+human_brain <- readRDS("/share/pub/dengcy/GWAS_Multiomics/singlecelldata/Human_brain.rds")
+Idents(human_brain) <- "anno"
+human_brain_avr <- AverageExpression(human_brain)
+human_brain_expr <- as.data.frame(human_brain_avr$SCT)
+human_brain_expr <- human_brain_expr[apply(human_brain_expr,1,sum)!=0,]
+
+
+top10_function <-function(exp){
+exp$Gene <- rownames(exp)
+exp <- exp %>% add_count(Gene) %>% 
+  filter(n==1) %>%
+  select(-n) %>%
+  gather(key = column,value=Expr,-Gene) %>%
+  as_tibble()
+
+exp <- exp %>%
+  group_by(column) %>%
+  mutate(Expr_sum_mean=Expr*1e6/sum(Expr))
+
+exp<- exp %>%
+  group_by(Gene) %>%
+  mutate(specificity=Expr_sum_mean/sum(Expr_sum_mean)) %>%
+  ungroup()
+
+# Filtered to remove extended MHC (chr6, 25Mb to 34Mb).
+  gene_coordinates <- 
+  read_tsv("/share/pub/dengcy/Singlecell/COVID19/MAGMA/NCBI/NCBI37.3.gene.loc.extendedMHCexcluded",
+           col_names = FALSE,col_types = 'cciicc') %>%
+  mutate(start=ifelse(X3-100000<0,0,X3-100000),end=X4+100000) %>%
+   select(X2,start,end,6,1) %>%
+  rename(chr="X2", Gene="X6",ENTREZ="X1") %>%
+  mutate(chr=paste0("chr",chr))
+
+  exp2 <- inner_join(exp,gene_coordinates,by="Gene")
+
+#Get number of genes that represent 10% of the dataset
+	n_genes <- length(unique(exp2$ENTREZ))
+	n_genes_to_keep <- (n_genes * 0.1) %>% round()
+
+exp2 %>% filter(Expr_sum_mean>1) %>% ldsc_bedfile("column")
+print("sucess!")
+}
+
+write_group  = function(df,Cell_type) {
+  df <- select(df,column,chr,start,end,ENTREZ)
+  dir.create(paste0("LDSC/Bed"), showWarnings = FALSE,recursive = TRUE)
+  write_tsv(df[-1],paste0("LDSC/Bed/",make.names(unique(df[1])),".bed"),col_names = F)
+return(df)
+}
+
+ldsc_bedfile <- function(d,Cell_type){
+  d_spe <- d %>% group_by_(Cell_type) %>% top_n(.,n_genes_to_keep,specificity) 
+  d_spe %>% do(write_group(.,Cell_type))
+}
+
+
+top10_function(human_brain_expr)
+
+
+#control.GeneSet
+library(tidyverse)
+write_tsv(data.frame(rownames(human_brain)),file="control.GeneSet")
+
+```
+
+
+
+#ADHD
+less ADHD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > ADHD_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/ADHD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./ADHD_p.txt
+
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' ADHD_p.txt ADHD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./ADHD.txt
+
+
+
+python ./ldsc/munge_sumstats.py \
+  --sumstats ADHD.txt \
+  --N 55374 \
+  --out ADHD \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+
+for FG in ./human_brain_ldscores/*GeneSet
+do
+  for FC in ./1000G_EUR_Phase3_plink/*bim
+    do 
+      index=`echo $FC|cut -d . -f 5`
+              python ./ldsc/make_annot.py --gene-set-file $FG --gene-coord-file ENSG_coord.txt --windowsize 100000 --bimfile $FC --annot-file ./human_brain_ldscores/${FG##*\/}.$index.annot.gz
+         done 
+done
+
+
+for FG in ./human_brain_ldscores/*GeneSet
+        do
+          for FC in ./1000G_EUR_Phase3_plink/*bim
+            do 
+              index=`echo $FC|cut -d . -f 5`
+              python ./ldsc/ldsc.py --l2 --bfile ./1000G_EUR_Phase3_plink/1000G.EUR.QC.$index --ld-wind-cm 1 --annot ./human_brain_ldscores/${FG##*\/}.$index.annot.gz --thin-annot --out ./human_brain_ldscores/${FG##*\/}.$index --print-snps ./hapmap3_snps/hm.$index.snp
+             done 
+      done
+
+
+python ./ldsc/ldsc.py \
+  --h2-cts  ADHD.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out ADHD \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+
+			#MDD
+			less MDD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > MDD_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/MDD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./MDD_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' MDD_p.txt MDD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./MDD.txt
+
+
+			python ./ldsc/munge_sumstats.py \
+			  --sumstats MDD.txt \
+			  --N 462933 \
+			  --out MDD \
+			  --chunksize 500000 \
+			  --merge-alleles ./w_hm3.snplist
+
+			python ./ldsc/ldsc.py \
+			  --h2-cts  MDD.sumstats.gz \
+			  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+			  --out MDD \
+			  --ref-ld-chr-cts human_brain.ldcts \
+			  --w-ld-chr weights_hm3_no_hla/weights.
+
+			#BID
+			less BID_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > BID_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/BID_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./BID_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' BID_p.txt BID_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./BID.txt
+
+
+			python ./ldsc/munge_sumstats.py \
+			  --sumstats BID.txt \
+			  --N 51710 \
+			  --out BID \
+			  --chunksize 500000 \
+			  --merge-alleles ./w_hm3.snplist
+
+			python ./ldsc/ldsc.py \
+			  --h2-cts  BID.sumstats.gz \
+			  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+			  --out BID \
+			  --ref-ld-chr-cts human_brain.ldcts \
+			  --w-ld-chr weights_hm3_no_hla/weights.
+
+			  #ASD
+			less ASD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > ASD_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/ASD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./ASD_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' ASD_p.txt ASD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./ASD.txt
+
+
+			python ./ldsc/munge_sumstats.py \
+			  --sumstats ASD.txt \
+			  --N 46351 \
+			  --out ASD \
+			  --chunksize 500000 \
+			  --merge-alleles ./w_hm3.snplist
+
+			python ./ldsc/ldsc.py \
+			  --h2-cts  ASD.sumstats.gz \
+			  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+			  --out ASD \
+			  --ref-ld-chr-cts human_brain.ldcts \
+			  --w-ld-chr weights_hm3_no_hla/weights.
+
+			   #AD
+			less AD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > AD_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/AD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./AD_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' AD_p.txt AD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./AD.txt
+
+
+	python ./ldsc/munge_sumstats.py \
+	--sumstats AD.txt \
+	--N 63926 \
+	--out AD \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  AD.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out AD \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+  			   #EP
+			less EP_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > EP_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/EP_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./EP_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' EP_p.txt EP_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./EP.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats EP.txt \
+	--N 44889 \
+	--out EP \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  EP.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out EP \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+    			   #Focal_EP
+			less Focal_EP_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > Focal_EP_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Focal_EP_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./Focal_EP_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' Focal_EP_p.txt Focal_EP_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./Focal_EP.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats Focal_EP.txt \
+	--N 39348 \
+	--out Focal_EP \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  Focal_EP.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out Focal_EP \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+      			   #Focal_EP
+			less Focal_EP_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > Focal_EP_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Focal_EP_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./Focal_EP_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' Focal_EP_p.txt Focal_EP_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./Focal_EP.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats Focal_EP.txt \
+	--N 39348 \
+	--out Focal_EP \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  Focal_EP.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out Focal_EP \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+        #Generalized_EP
+			less Generalized_EP_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > Generalized_EP_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Generalized_EP_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./Generalized_EP_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' Generalized_EP_p.txt Generalized_EP_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./Generalized_EP.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats Generalized_EP.txt \
+	--N 33446 \
+	--out Generalized_EP \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  Generalized_EP.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out Generalized_EP \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+          #Juvenile_EP
+			less Juvenile_EP_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > Juvenile_EP_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Juvenile_EP_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./Juvenile_EP_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' Juvenile_EP_p.txt Juvenile_EP_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./Juvenile_EP.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats Juvenile_EP.txt \
+	--N 30858 \
+	--out Juvenile_EP \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  Juvenile_EP.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out Juvenile_EP \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+            #MG
+			less MG_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > MG_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Migraine_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./MG_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' MG_p.txt MG_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./MG.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats MG.txt \
+	--N 462933 \
+	--out MG \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  MG.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out MG \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+              #MS
+			less MS_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > MS_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Multiple_sclerosis_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./MS_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' MS_p.txt MS_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./MS.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats MS.txt \
+	--N 115803 \
+	--out MS \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  MS.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out MS \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+                #SC
+			less SC_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > SC_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/smokingCessation_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./SC_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' SC_p.txt SC_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./SC.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats SC.txt \
+	--N 76047 \
+	--out SC \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  SC.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out SC \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+                  #CognitivePerformance
+			less CognitivePerformance_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > CognitivePerformance_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/CognitivePerformance_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./CognitivePerformance_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' CognitivePerformance_p.txt CognitivePerformance_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./CognitivePerformance.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats CognitivePerformance.txt \
+	--N 257841 \
+	--out CognitivePerformance \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  CognitivePerformance.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out CognitivePerformance \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+            #Openness
+			less Openness_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > Openness_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/OpennessToExperence_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./Openness_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' Openness_p.txt Openness_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./Openness.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats Openness.txt \
+	--N 17375 \
+	--out Openness \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  Openness.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out Openness \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+              #SubjectWellBeing
+			less SubjectWellBeing_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > SubjectWellBeing_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/SubjectWellBeing_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./SubjectWellBeing_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' SubjectWellBeing_p.txt SubjectWellBeing_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./SubjectWellBeing.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats SubjectWellBeing.txt \
+	--N 298420 \
+	--out SubjectWellBeing \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  SubjectWellBeing.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out SubjectWellBeing \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+  ##SubjectWellBeing
+			less SubjectWellBeing_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > SubjectWellBeing_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/SubjectWellBeing_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./SubjectWellBeing_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' SubjectWellBeing_p.txt SubjectWellBeing_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./SubjectWellBeing.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats SubjectWellBeing.txt \
+	--N 298420 \
+	--out SubjectWellBeing \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  SubjectWellBeing.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out SubjectWellBeing \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+			less SubjectWellBeing_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > SubjectWellBeing_m.txt
+			less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/SubjectWellBeing_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./SubjectWellBeing_p.txt
+
+			awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' SubjectWellBeing_p.txt SubjectWellBeing_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./SubjectWellBeing.txt
+
+	##Happiness
+	less Happiness_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > Happiness_m.txt
+	less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Happiness_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./Happiness_p.txt
+
+	awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' Happiness_p.txt Happiness_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./Happiness.txt
+
+
+python ./ldsc/munge_sumstats.py \
+	--sumstats Happiness.txt \
+	--N 152348 \
+	--out Happiness \
+	--chunksize 500000 \
+	--merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  Happiness.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out Happiness \
+  --ref-ld-chr-cts human_brain.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+		
+
+
+for FG in ./HCA_ldscores/*GeneSet
+do
+  for FC in ./1000G_EUR_Phase3_plink/*bim
+    do 
+      index=`echo $FC|cut -d . -f 5`
+              python ./ldsc/make_annot.py --gene-set-file $FG --gene-coord-file ENSG_coord.txt --windowsize 100000 --bimfile $FC --annot-file ./HCA_ldscores/${FG##*\/}.$index.annot.gz
+         done 
+done
+
+
+#BMI
+
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/BMI/ukb-b-19953.vcf.gz | grep -v "##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./BMI_ldsc.txt
+
+less BMI_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > BMI_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/BMI_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./BMI_p.txt
+
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' BMI_p.txt BMI_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./BMI.txt
+
+python ./ldsc/munge_sumstats.py \
+  --sumstats BMI.txt \
+  --N 461460 \
+  --out BMI \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  BMI.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out BMI \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+#WHR
+zless zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/WHR/ieu-a-72.vcf.gz | grep -v "##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./WHR_ldsc.txt
+
+less WHR_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > WHR_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/WHR_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./WHR_p.txt
+
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' WHR_p.txt WHR_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./WHR.txt
+
+python ./ldsc/munge_sumstats.py \
+  --sumstats WHR.txt \
+  --N 224459 \
+  --out WHR \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  WHR.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out WHR \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+#WC
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/WC/ieu-a-60.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./WC_ldsc.txt
+
+less WC_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > WC_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/WC_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./WC_p.txt
+
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' WC_p.txt WC_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./WC.txt
+
+python ./ldsc/munge_sumstats.py \
+  --sumstats WC.txt \
+  --N 224459 \
+  --out WC \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  WC.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out WC \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#OB
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/WC/ieu-a-60.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./WC_ldsc.txt
+
+less WC_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > WC_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/WC_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./WC_p.txt
+
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' WC_p.txt WC_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./WC.txt
+
+python ./ldsc/munge_sumstats.py \
+  --sumstats WC.txt \
+  --N 224459 \
+  --out WC \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  WC.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out WC \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+#OB
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/Obesity/ieu-a-90.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./OB_ldsc.txt
+less OB_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > OB_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/Obesity_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./OB_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' OB_p.txt OB_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./OB.txt
+python ./ldsc/munge_sumstats.py --sumstats OB.txt --N 98697--out OB --chunksize 500000 --merge-alleles ./w_hm3.snplist
+python ./ldsc/ldsc.py   --h2-cts  OB.sumstats.gz --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline.   --out OB   --ref-ld-chr-cts HCA.ldcts   --w-ld-chr weights_hm3_no_hla/weights.
+#CAD
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/06_Cardiovascular_disease/CAD/ebi-a-GCST005195.vcf.gz | grep -v "^##" |  cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./CAD_ldsc.txt
+less CAD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > CAD_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/CAD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./CAD_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' CAD_p.txt CAD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./CAD.txt
+python ./ldsc/munge_sumstats.py --sumstats CAD.txt --N 141217--out CAD --chunksize 500000 --merge-alleles ./w_hm3.snplist
+python ./ldsc/ldsc.py   --h2-cts  CAD.sumstats.gz --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline.   --out CAD   --ref-ld-chr-cts HCA.ldcts   --w-ld-chr weights_hm3_no_hla/weights.
+#TC
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/TC/TC_2013/ieu-a-301.vcf.gz | grep -v "##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./TC_ldsc.txt
+less TC_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > TC_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/TC_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./TC_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' TC_p.txt TC_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./TC.txt
+
+python ./ldsc/munge_sumstats.py \
+  --sumstats TC.txt \
+  --N 187365 \
+  --out TC \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  TC.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out TC \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#LDL
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/LDL/LDL_2013/ieu-a-300.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./LDL_ldsc.txt
+less LDL_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > LDL_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/LDL_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./LDL_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' LDL_p.txt LDL_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./LDL.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats LDL.txt \
+  --N 187365 \
+  --out LDL \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  LDL.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out LDL \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#HDL
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/04_Metabolic_disease/HDL/HDL_2013/ieu-a-299.vcf.gz | grep -v "##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./HDL_ldsc.txt
+less HDL_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > HDL_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/HDL_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./HDL_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' HDL_p.txt HDL_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./HDL.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats HDL.txt \
+  --N 187167 \
+  --out HDL \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  HDL.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out HDL \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#DBP_European
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/06_Cardiovascular_disease/DBP_European/ieu-b-39.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./DBP_European_ldsc.txt
+less DBP_European_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > DBP_European_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/DBP_European_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./DBP_European_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' DBP_European_p.txt DBP_European_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./DBP_European.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats DBP_European.txt \
+  --N 757601 \
+  --out DBP_European \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  DBP_European.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out DBP_European \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#DBP_EastAsian
+zless zless /share/pub/mayl/Sherlock/00_IEU_GWAS/06_Cardiovascular_disease/DBP_EastAsian/bbj-a-17.vcf.gz | grep -v "^##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./DBP_EastAsian_ldsc.txt
+less DBP_EastAsian_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > DBP_EastAsian_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/DBP_EastAsian_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./DBP_EastAsian_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' DBP_EastAsian_p.txt DBP_EastAsian_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./DBP_EastAsian.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats DBP_EastAsian.txt \
+  --N 136615 \
+  --out DBP_EastAsian \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  DBP_EastAsian.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out DBP_EastAsian \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#PR_EastAsian
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/06_Cardiovascular_disease/PR_EastAsian/bbj-a-46.vcf.gz | grep -v "##" | grep -v "^X" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./PR_EastAsian_ldsc.txt
+less PR_EastAsian_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > PR_EastAsian_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/PR_EastAsian_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./PR_EastAsian_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' PR_EastAsian_p.txt PR_EastAsian_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./PR_EastAsian.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats PR_EastAsian.txt \
+  --N 136249 \
+  --out PR_EastAsian \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  PR_EastAsian.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out PR_EastAsian \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#SBP
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/06_Cardiovascular_disease/SBP/ieu-b-38.vcf.gz | grep -v "##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./SBP_ldsc.txt
+less SBP_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > SBP_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/SBP_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./SBP_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' SBP_p.txt SBP_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./SBP.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats SBP.txt \
+  --N 757601 \
+  --out SBP \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  SBP.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out SBP \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#T2D
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/06_Cardiovascular_disease/T2D/ebi-a-GCST006867.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./T2D_ldsc.txt
+less T2D_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > T2D_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/T2D_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./T2D_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' T2D_p.txt T2D_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./T2D.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats T2D.txt \
+  --N 655666 \
+  --out T2D \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  T2D.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out T2D \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+#IBD
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/05_Immunological_disease/IBD/ebi-a-GCST004131.vcf.gz | grep -v "##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./IBD_ldsc.txt
+less IBD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > IBD_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/IBD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./IBD_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' IBD_p.txt IBD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./IBD.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats IBD.txt \
+  --N 59957 \
+  --out IBD \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  IBD.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out IBD \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#PBC
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/05_Immunological_disease/PBC/ebi-a-GCST003129.vcf | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./PBC_ldsc.txt
+less PBC_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > PBC_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/PBC_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./PBC_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' PBC_p.txt PBC_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./PBC.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats PBC.txt \
+  --N 13239 \
+  --out PBC \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  PBC.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out PBC \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#CoeliacDisease
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/05_Immunological_disease/CoeliacDisease/dubois_2010_20190752_cel_efo0001060_1_gwas.sumstats.tsv.gz | sort -k1n | grep -v "^X" | grep -v "^Y" | cut -f 1-7 | sed "1i hg19chr\tpos\tsnpid\ta1\ta2\tpval\tbeta" | sed "2d" | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' > ./CoeliacDisease_ldsc.txt
+less CoeliacDisease_ldsc.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7}' > CoeliacDisease_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/CoeliacDisease_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./CoeliacDisease_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' CoeliacDisease_p.txt CoeliacDisease_m.txt | sed '1i snpid\thg19chr\tpos\ta1\ta2\tpval\tbeta' > ./CoeliacDisease.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats CoeliacDisease.txt \
+  --N 15283 \
+  --out CoeliacDisease \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  CoeliacDisease.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out CoeliacDisease \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+#UlcerativeColitis
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/05_Immunological_disease/UlcerativeColitis/ebi-a-GCST004133.vcf.gz | grep -v "##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./UlcerativeColitis_ldsc.txt
+less UlcerativeColitis_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > UlcerativeColitis_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/UlcerativeColitis_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./UlcerativeColitis_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' UlcerativeColitis_p.txt UlcerativeColitis_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./UlcerativeColitis.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats UlcerativeColitis.txt \
+  --N 45975 \
+  --out UlcerativeColitis \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
+python ./ldsc/ldsc.py \
+  --h2-cts  UlcerativeColitis.sumstats.gz \
+  --ref-ld-chr 1000G_EUR_Phase3_baseline/baseline. \
+  --out UlcerativeColitis \
+  --ref-ld-chr-cts HCA.ldcts \
+  --w-ld-chr weights_hm3_no_hla/weights.
+
+#T1D
+zless /share/pub/mayl/Sherlock/00_IEU_GWAS/05_Immunological_disease/
+#PD
+zless /share/pub/dengcy/GWAS_Multiomics/test/brain/gwas_files/ieu-b-7.vcf.gz | grep -v "^##" | cut -f 1-5,10 | awk -v OFS="\t" '{if($1!=6) print $0;else if(($1=6)&&($2<25000000)||($1=6)&&($1>34000000)) print $0}' | sed 's/:/\t/g' | cut -f 1,3-6,8 | sed '1i hg19chr\tsnpid\ta1\ta2\tbeta\tpval' | sed '2d' | awk -v OFS='\t' '{if(NR!=1) $6=10^(-$6);print $0}' > ./PD_ldsc.txt
+less PD_ldsc.txt | awk -v OFS="\t" '{print $2,$1,$3,$4,$5,$6}' > PD_m.txt
+less /share/pub/dengcy/GWAS_Multiomics/gwasdata/prunedata/PD_prune_gwas_data.txt | awk -v OFS="\t" '{print $3,$1,$2,$4,$5,$6,$7,$8}' > ./PD_p.txt
+awk 'NR==FNR{a[$1]=1} NR>FNR&&a[$1]==1 {print $0}' PD_p.txt PD_m.txt | sed '1i snpid\thg19chr\ta1\ta2\tbeta\tpval' > ./PD.txt
+python ./ldsc/munge_sumstats.py \
+  --sumstats PD.txt \
+  --N 482730 \
+  --out PD \
+  --chunksize 500000 \
+  --merge-alleles ./w_hm3.snplist
+
