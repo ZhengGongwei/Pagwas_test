@@ -1,0 +1,12 @@
+#PBS -N tcell_scP1
+#PBS -l mem=150gb
+#PBS -o /share2/pub/zhenggw/zhenggw/tcell_scPagwas/test/tcell_scP1.out
+#PBS -e /share2/pub/zhenggw/zhenggw/tcell_scPagwas/test/tcell_scP1.err
+
+source activate R410
+cd /share2/pub/zhenggw/zhenggw/tcell_scPagwas/test/
+for i in /share2/pub/lijj/lijj/TheDutchMicrobiomeProject/gwas_species_scPagwas_format/*.txt
+do
+#r脚本中依靠commandArgs(T)从外部输入参数
+Rscript /share2/pub/zhenggw/zhenggw/tcell_scPagwas/test/tcell_scP.R $i #args2
+done
